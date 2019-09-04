@@ -10,10 +10,15 @@
 	</parent>
 
 	<groupId>com.yueny</groupId>
-	<artifactId>scanner</artifactId>
+	<artifactId>scanner8</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<name>${project.artifactId}</name>
+	<description>jdk 1.8下的扫描工具</description>
+
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
 
 	<dependencies>
 		<dependency>
@@ -21,13 +26,34 @@
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-collections4</artifactId>
+		</dependency>
+		<dependency>
 	        <groupId>org.projectlombok</groupId> 
 	        <artifactId>lombok</artifactId>
 	    </dependency>
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+		</dependency>
+
+		<!-- 自由线程池工具 -->
+		<dependency>
+			<groupId>com.yueny.rapid</groupId>
+			<artifactId>rapid-lang-thread</artifactId>
+			<version>1.0.1-SNAPSHOT</version>
+		</dependency>
 
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.yueny</groupId>
+			<artifactId>rapid-strategy</artifactId>
+			<version>1.1.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

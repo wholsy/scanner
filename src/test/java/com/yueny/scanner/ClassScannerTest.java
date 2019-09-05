@@ -1,6 +1,7 @@
 package com.yueny.scanner;
 
 import com.yueny.scanner.api.IScanner;
+import com.yueny.scanner.config.ScanConfig;
 import com.yueny.scanner.test.st.anno.St;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -34,7 +35,7 @@ public class ClassScannerTest {
      * 测试用例：扫描多个包下带有Scannable注解的类
      */
     @Test
-    public void testScanByAnno() {
+    public void testScanByAnnotation() {
         List<Class<?>> classList = classScanner.scan(scanPkgs, Deprecated.class);
         Assert.assertTrue(classList.size() > 0);
         log.info("共扫描到{}个类", classList.size());
@@ -42,6 +43,12 @@ public class ClassScannerTest {
         classList = classScanner.scan(scanPkgs, St.class);
         Assert.assertTrue(classList.size() == 2);
         log.info("共扫描到{}个类", classList.size());
+
+        ScanConfig scanConfig = ScanConfig.builder()
+                .basePackages(scanPkgs)
+                .annotation(St.class)
+                .build();
+        log.info("扫描配置: {}.", scanConfig);
     }
 
 }

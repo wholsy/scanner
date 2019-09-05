@@ -30,16 +30,6 @@ public class ClazzUtils {
     }
 
     /**
-     * 是否为接口
-     *
-     * @param clazz
-     * @return
-     */
-    public static boolean isInterface(Class<?> clazz) {
-        return true;
-    }
-
-    /**
      * Class文件名转为类名（即去除后缀名）
      *
      * @param classFileName

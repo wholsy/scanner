@@ -20,7 +20,7 @@ public interface IScanner {
     List<Class<?>> scan(List<String> basePackages);
 
     /**
-     * 扫描多个包下带有注解的Class
+     * 扫描多个包下带有指定注解的Class
      *
      * @param basePackages 包路径
      * @param annotation
@@ -29,7 +29,7 @@ public interface IScanner {
     List<Class<?>> scan(List<String> basePackages, Class<? extends Annotation> annotation);
 
     /**
-     * 扫描多个包下类clazz的所有子类
+     * 扫描多个包下类/接口clazz的所有子类
      *
      * @param basePackages 包路径
      * @param clazz

@@ -1,7 +1,6 @@
 package com.yueny.scanner.config;
 
 import lombok.*;
-import lombok.experimental.Accessors;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
@@ -13,11 +12,9 @@ import java.util.List;
  * @Date 2019-09-04 22:59
  */
 @Builder
-//@AllArgsConstructor
-//@NoArgsConstructor
+@NoArgsConstructor
 @Getter
 @ToString
-//@Accessors(chain=true)
 public class ScanConfig {
     /**
      * 扫描路径

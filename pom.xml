@@ -17,6 +17,7 @@
 
 	<modules>
 		<module>scanner8</module>
+		<module>scanner-spring</module>
 	</modules>
 
 </project>

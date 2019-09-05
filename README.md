@@ -154,7 +154,8 @@ public class ScannerTest {
     + 获取多个包下带有指定注解的所有的Class类。
     + 获取多个包下带有指定注解或指定父接口的所有子孙Class类。
     + 允许自定义过滤接口、抽象类或实体类。
-    
+* 1.1.0
+    +     
 
 ### 联系方式
 - Email：deep_blue_yang@126.com

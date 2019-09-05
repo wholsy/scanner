@@ -155,7 +155,13 @@ public class ScannerTest {
     + 获取多个包下带有指定注解或指定父接口的所有子孙Class类。
     + 允许自定义过滤接口、抽象类或实体类。
 * 1.1.0
-    +     
+    +  spring支持(scanner-spring)   
+
+### 项目结构
+scanner
+- scanner8：jdk 1.8下的核心包
+- scanner-spring：Spring Boot扩展包，支持注解配置和生效
+
 
 ### 联系方式
 - Email：deep_blue_yang@126.com

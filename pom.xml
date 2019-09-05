@@ -16,7 +16,7 @@
 	<description>jdk 1.8下的扫描工具</description>
 
 	<modules>
-		<module>scanner-core</module>
+		<module>scanner8</module>
 	</modules>
 
 </project>

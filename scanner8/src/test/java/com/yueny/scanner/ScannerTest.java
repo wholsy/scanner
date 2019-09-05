@@ -43,7 +43,7 @@ public class ScannerTest {
         log.info("共扫描到{}个类", classList.size());
 
         classList = scanner.scan(scanPkgs, St.class);
-        Assert.assertTrue(classList.size() == 3);
+        Assert.assertTrue(classList.size() == 4);
         log.info("共扫描到{}个类", classList.size());
 
         ScanConfig scanConfig = ScanConfig.builder()
@@ -60,22 +60,22 @@ public class ScannerTest {
     public void testScanByClass() {
         List<Class<?>> classList = scanner.scan(Sets.newHashSet(Arrays.asList(
                 "com.aaa",  "com.yueny")), ISt.class);
-        Assert.assertTrue(classList.size() == 7);
-        log.info("共扫描到{}个类:{}.", classList.size(), classList);
-
-        classList = scanner.scan(Sets.newHashSet(Arrays.asList(
-                "com.aaa",  "com.yueny")), ISt.class, Arrays.asList(ScanConfig.ClazzType.INTERFACE, ScanConfig.ClazzType.CLASS, ScanConfig.ClazzType.ABSTRACT));
         Assert.assertTrue(classList.size() == 8);
         log.info("共扫描到{}个类:{}.", classList.size(), classList);
 
         classList = scanner.scan(Sets.newHashSet(Arrays.asList(
+                "com.aaa",  "com.yueny")), ISt.class, Arrays.asList(ScanConfig.ClazzType.INTERFACE, ScanConfig.ClazzType.CLASS, ScanConfig.ClazzType.ABSTRACT));
+        Assert.assertTrue(classList.size() == 9);
+        log.info("共扫描到{}个类:{}.", classList.size(), classList);
+
+        classList = scanner.scan(Sets.newHashSet(Arrays.asList(
                 "com.aaa",  "com.yueny")), ISt.class, Arrays.asList(ScanConfig.ClazzType.INTERFACE, ScanConfig.ClazzType.CLASS));
-        Assert.assertTrue(classList.size() == 7);
+        Assert.assertTrue(classList.size() == 8);
         log.info("共扫描到{}个类:{}.", classList.size(), classList);
 
         classList = scanner.scan(Sets.newHashSet(Arrays.asList(
                 "com.aaa",  "com.yueny")), ISt.class, Arrays.asList(ScanConfig.ClazzType.INTERFACE));
-        Assert.assertTrue(classList.size() == 2);
+        Assert.assertTrue(classList.size() == 3);
         log.info("共扫描到{}个类:{}.", classList.size(), classList);
 
         classList = scanner.scan(Sets.newHashSet(Arrays.asList(
@@ -86,6 +86,11 @@ public class ScannerTest {
         classList = scanner.scan(Sets.newHashSet(Arrays.asList(
                 "com.aaa",  "com.yueny")), ISt.class, Arrays.asList(ScanConfig.ClazzType.ABSTRACT));
         Assert.assertTrue(classList.size() == 1);
+        log.info("共扫描到{}个类:{}.", classList.size(), classList);
+
+        classList = scanner.scan(Arrays.asList("com.aaa",  "com.yueny"),
+                St.class, ISt.class, Arrays.asList(ScanConfig.ClazzType.INTERFACE));
+        Assert.assertTrue(classList.size() == 2);
         log.info("共扫描到{}个类:{}.", classList.size(), classList);
 
     }

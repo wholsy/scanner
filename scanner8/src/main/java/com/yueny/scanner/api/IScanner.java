@@ -47,4 +47,14 @@ public interface IScanner {
      * @return
      */
     List<Class<?>> scan(Set<String> basePackages, Class<?> clazz, List<ScanConfig.ClazzType> clazzTypes);
+
+    /**
+     * 扫描多个包下带有指定注解和接口的所有子类
+     *
+     * @param basePackages 包路径
+     * @param annotation
+     * @param clazz 类或接口类型
+     * @return
+     */
+    List<Class<?>> scan(List<String> basePackages, Class<? extends Annotation> annotation, Class<?> clazz, List<ScanConfig.ClazzType> clazzTypes);
 }

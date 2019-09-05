@@ -157,6 +157,7 @@ public class ScannerTest {
 * 1.1.0
     +  spring支持(scanner-spring)   
     + 匿名内部类的表达式判断
+    + 扫描多个包下带有指定注解和接口的所有子类
 
 ### 项目结构
 scanner

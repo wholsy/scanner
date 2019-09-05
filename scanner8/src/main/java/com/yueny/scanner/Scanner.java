@@ -75,6 +75,16 @@ public class Scanner implements IScanner {
                 .build());
     }
 
+    @Override
+    public List<Class<?>> scan(List<String> basePackages, Class<? extends Annotation> annotation, Class<?> clazz, List<ScanConfig.ClazzType> clazzTypes) {
+        return scan(ScanConfig.builder()
+                .basePackages(basePackages)
+                .annotation(annotation)
+                .clazz(clazz)
+                .clazzTypes(clazzTypes)
+                .build());
+    }
+
     private List<Class<?>> scan(ScanConfig scanConfig) {
         StopWatch stopWatch = StopWatch.createStarted();
         String taskId = UUID.randomUUID().toString().replace("-", "");

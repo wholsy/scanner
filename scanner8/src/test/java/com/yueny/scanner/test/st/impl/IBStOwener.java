@@ -7,10 +7,7 @@ import com.yueny.scanner.test.st.anno.St;
  * @Author yueny09 <deep_blue_yang@126.com>
  * @Date 2019-09-04 22:49
  */
-public interface IStOwener extends ISt {
+@St
+public interface IBStOwener extends IStOwener {
 
-    @St
-    interface ITTOwener extends ISt {
-        //.
-    }
 }

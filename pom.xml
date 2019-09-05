@@ -38,7 +38,7 @@
 			<artifactId>guava</artifactId>
 		</dependency>
 
-		<!-- 自由线程池工具 -->
+		<!-- 自有线程池工具 -->
 		<dependency>
 			<groupId>com.yueny.rapid</groupId>
 			<artifactId>rapid-lang-thread</artifactId>

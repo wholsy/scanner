@@ -15,4 +15,16 @@ public class ClazzUtilsTest {
 
         Assert.assertEquals(className, "org.springframework.instrument.classloading.ResourceOverridingShadowingClassLoader");
     }
+
+    @Test
+    public void testIsAnonymousInnerClass(){
+        String innerClassName = "com.yueny.superclub.util.strategy.scan.ContainerProxy$1";
+        Assert.assertTrue(ClazzUtils.isAnonymousInnerClass(innerClassName));
+
+        innerClassName = "com.yueny.superclub.util.strategy.scan.ContainerProxy$1.class";
+        Assert.assertTrue(ClazzUtils.isAnonymousInnerClass(innerClassName));
+
+        innerClassName = "com.yueny.superclub.util.strategy.scan.ContainerProxy";
+        Assert.assertFalse(ClazzUtils.isAnonymousInnerClass(innerClassName));
+    }
 }

@@ -14,6 +14,7 @@ public class ClazzUtils {
     /**
      * 匿名内部类匹配表达式
      */
+    private static final Pattern ANONYMOUS_INNER_PATTERN = Pattern.compile("^[\\s\\S]*\\${1}\\d");
     private static final Pattern ANONYMOUS_INNER_CLASS_PATTERN = Pattern.compile("^[\\s\\S]*\\${1}\\d+\\.class$");
 
     /**
@@ -46,7 +47,7 @@ public class ClazzUtils {
      * @return
      */
     public static boolean isAnonymousInnerClass(String className) {
-        return ANONYMOUS_INNER_CLASS_PATTERN.matcher(className).matches();
+        return ANONYMOUS_INNER_CLASS_PATTERN.matcher(className).matches() || ANONYMOUS_INNER_PATTERN.matcher(className).matches();
     }
 
 }

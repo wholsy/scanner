@@ -156,6 +156,7 @@ public class ScannerTest {
     + 允许自定义过滤接口、抽象类或实体类。
 * 1.1.0
     +  spring支持(scanner-spring)   
+    + 匿名内部类的表达式判断
 
 ### 项目结构
 scanner

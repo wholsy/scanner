@@ -14,5 +14,6 @@ import static java.lang.annotation.ElementType.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value=TYPE)
+@St
 public @interface St {
 }

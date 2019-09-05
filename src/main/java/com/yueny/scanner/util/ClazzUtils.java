@@ -36,7 +36,7 @@ public class ClazzUtils {
      * @return
      */
     public static String classFile2SimpleClass(String classFileName) {
-        return classFileName.replace(".class", "");
+        return StringUtils.substringBeforeLast(classFileName, ".class");
     }
 
     /**

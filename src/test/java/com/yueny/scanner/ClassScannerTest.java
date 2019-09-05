@@ -1,7 +1,9 @@
 package com.yueny.scanner;
 
+import com.google.common.collect.Sets;
 import com.yueny.scanner.api.IScanner;
 import com.yueny.scanner.config.ScanConfig;
+import com.yueny.scanner.test.st.ISt;
 import com.yueny.scanner.test.st.anno.St;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
@@ -32,7 +34,7 @@ public class ClassScannerTest {
     }
 
     /**
-     * 测试用例：扫描多个包下带有Scannable注解的类
+     *
      */
     @Test
     public void testScanByAnnotation() {
@@ -41,7 +43,7 @@ public class ClassScannerTest {
         log.info("共扫描到{}个类", classList.size());
 
         classList = classScanner.scan(scanPkgs, St.class);
-        Assert.assertTrue(classList.size() == 2);
+        Assert.assertTrue(classList.size() == 3);
         log.info("共扫描到{}个类", classList.size());
 
         ScanConfig scanConfig = ScanConfig.builder()
@@ -49,6 +51,43 @@ public class ClassScannerTest {
                 .annotation(St.class)
                 .build();
         log.info("扫描配置: {}.", scanConfig);
+    }
+
+
+    /**
+     */
+    @Test
+    public void testScanByClass() {
+        List<Class<?>> classList = classScanner.scan(Sets.newHashSet(Arrays.asList(
+                "com.aaa",  "com.yueny")), ISt.class);
+        Assert.assertTrue(classList.size() == 7);
+        log.info("共扫描到{}个类:{}.", classList.size(), classList);
+
+        classList = classScanner.scan(Sets.newHashSet(Arrays.asList(
+                "com.aaa",  "com.yueny")), ISt.class, Arrays.asList(ScanConfig.ClazzType.INTERFACE, ScanConfig.ClazzType.CLASS, ScanConfig.ClazzType.ABSTRACT));
+        Assert.assertTrue(classList.size() == 8);
+        log.info("共扫描到{}个类:{}.", classList.size(), classList);
+
+        classList = classScanner.scan(Sets.newHashSet(Arrays.asList(
+                "com.aaa",  "com.yueny")), ISt.class, Arrays.asList(ScanConfig.ClazzType.INTERFACE, ScanConfig.ClazzType.CLASS));
+        Assert.assertTrue(classList.size() == 7);
+        log.info("共扫描到{}个类:{}.", classList.size(), classList);
+
+        classList = classScanner.scan(Sets.newHashSet(Arrays.asList(
+                "com.aaa",  "com.yueny")), ISt.class, Arrays.asList(ScanConfig.ClazzType.INTERFACE));
+        Assert.assertTrue(classList.size() == 2);
+        log.info("共扫描到{}个类:{}.", classList.size(), classList);
+
+        classList = classScanner.scan(Sets.newHashSet(Arrays.asList(
+                "com.aaa",  "com.yueny")), ISt.class, Arrays.asList(ScanConfig.ClazzType.CLASS));
+        Assert.assertTrue(classList.size() == 5);
+        log.info("共扫描到{}个类:{}.", classList.size(), classList);
+
+        classList = classScanner.scan(Sets.newHashSet(Arrays.asList(
+                "com.aaa",  "com.yueny")), ISt.class, Arrays.asList(ScanConfig.ClazzType.ABSTRACT));
+        Assert.assertTrue(classList.size() == 1);
+        log.info("共扫描到{}个类:{}.", classList.size(), classList);
+
     }
 
 }

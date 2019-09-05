@@ -1,5 +1,7 @@
 package com.yueny.scanner.api;
 
+import com.yueny.scanner.config.ScanConfig;
+
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Set;
@@ -32,8 +34,17 @@ public interface IScanner {
      * 扫描多个包下类/接口clazz的所有子类
      *
      * @param basePackages 包路径
-     * @param clazz
+     * @param clazz 类或接口类型
      * @return
      */
     List<Class<?>> scan(Set<String> basePackages, Class<?> clazz);
+
+    /**
+     * 扫描多个包下类/接口clazz的所有子类
+     *
+     * @param basePackages 包路径
+     * @param clazz 类或接口类型
+     * @return
+     */
+    List<Class<?>> scan(Set<String> basePackages, Class<?> clazz, List<ScanConfig.ClazzType> clazzTypes);
 }

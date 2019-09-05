@@ -9,4 +9,8 @@ import com.yueny.scanner.test.st.anno.St;
  */
 @St
 public interface IStOwener extends ISt {
+
+    interface ITTOwener extends ISt {
+        //.
+    }
 }

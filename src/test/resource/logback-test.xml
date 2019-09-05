@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds" debug="false">
+    <contextName>asset</contextName>
+
+    <property name="LOG_HOME" value="/data/logs/yueny/example/scanner/"/>
+    <property name="DEFAULT_PATTERN"
+              value="%d %-5level [%X{ctxTraceId}][%X{ctxEventId}][%thread] %logger{5} - %msg%n"/>
+    <property name="LEVEL" value="debug"/>
+    <property name="CHARSET" value="UTF-8"/>
+    <property name="MAX_HISTORY" value="90"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>${LEVEL}</level>
+        </filter>
+        <encoder>
+            <pattern>[%-5level] %date{HH:mm:ss.SSS} [%X{ctxTraceId}][%X{ctxEventId}][%thread] %logger{36} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/%d{yyyyMMdd}/error.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${DEFAULT_PATTERN}</pattern>
+            <charset>${CHARSET}</charset>
+        </encoder>
+    </appender>
+
+    <appender name="SERVICE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/service.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/%d{yyyyMMdd}/service.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <cleanHistoryOnStart>true</cleanHistoryOnStart>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${DEFAULT_PATTERN}</pattern>
+            <charset>${CHARSET}</charset>
+        </encoder>
+    </appender>
+    
+    <logger name="com.yueny.scanner" level="${LEVEL}" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="SERVICE"/>
+        <appender-ref ref="ERROR"/>
+    </logger>
+    <logger name="ch.qos.logback" level="ERROR" additivity="false">
+        <appender-ref ref="ERROR"/>
+    </logger>
+
+    <root level="ROOT">
+        <appender-ref ref="SERVICE"/>
+        <appender-ref ref="ERROR"/>
+        <appender-ref ref="CONSOLE"/>
+    </root>
+
+</configuration>

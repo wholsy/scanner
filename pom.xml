@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>com.yueny</groupId>
 		<artifactId>yueny-parent</artifactId>
-		<version>1.1.6-SNAPSHOT</version>
+		<version>1.2.0-RELEASE</version>
 	</parent>
 
 	<groupId>com.yueny</groupId>

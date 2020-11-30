@@ -7,6 +7,8 @@ scanner 为一个脱离 spring 环境的包路径(package)下的类扫描工具�
 项目已上传Maven中央仓库。
 > https://search.maven.org/search?q=whosly
 
+>https://mvnrepository.com/search?q=whosly
+
 #### 1.注意事项
 - 项目JDK 版本 1.8+
 - 基线 yueny-parent 1.3.0。 请提前部署。

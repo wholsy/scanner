@@ -48,7 +48,7 @@
         </encoder>
     </appender>
     
-    <logger name="com.yueny.scanner" level="${LEVEL}" additivity="false">
+    <logger name="com.whosly.scanner" level="${LEVEL}" additivity="false">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="SERVICE"/>
         <appender-ref ref="ERROR"/>

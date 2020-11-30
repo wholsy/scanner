@@ -4,9 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>com.yueny</groupId>
+		<groupId>com.whosly</groupId>
 		<artifactId>yueny-parent</artifactId>
-		<version>1.2.0-RELEASE</version>
+		<version>1.3.0-RELEASE</version>
 	</parent>
 
 	<groupId>com.yueny</groupId>

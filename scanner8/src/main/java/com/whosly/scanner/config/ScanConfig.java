@@ -29,7 +29,7 @@ public class ScanConfig {
      * 扫描多个包下带有指定注解的Class. 如 @Getter 等。
      * 该值存在的时候，扫描的是被该注解标注的所有类
      */
-    private Class<? extends Annotation> annotation;
+    private Class<? extends Annotation> annotationClazz;
 
     /**
      * 类或接口类型
@@ -45,6 +45,11 @@ public class ScanConfig {
     @Builder.Default
     private List<ClazzType> clazzTypes = Arrays.asList(ClazzType.CLASS, ClazzType.INTERFACE);
 
+    /**
+     * 扫描类型。
+     *
+     * 不扫描注解
+     */
     public enum ClazzType{
         /**
          * 接口， 包含在接口/普通类中声明的内部接口

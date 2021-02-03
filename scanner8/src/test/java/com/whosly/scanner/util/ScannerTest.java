@@ -6,10 +6,12 @@ import com.whosly.scanner.api.IScanner;
 import com.whosly.scanner.config.ScanConfig;
 import com.whosly.scanner.util.st.ISt;
 import com.whosly.scanner.util.st.anno.St;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 
+import javax.annotation.processing.SupportedAnnotationTypes;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,10 +30,19 @@ public class ScannerTest {
      * 测试用例：扫描多个包
      */
     @Test
-    public void testScan() {
-        List<Class<?>> classList = scanner.scan(scanPkgs);
+    public void testScanAnno() {
+        List<Class<?>> classList = scanner.scanAnno(scanPkgs, SupportedAnnotationTypes.class);
         Assert.assertTrue(classList.size() > 0);
-        log.info("共扫描到{}个类", classList.size());
+        log.info("classList 共扫描到{}个类", classList.size());
+
+        List<Class<?>> classList1 = scanner.scanAnno(scanPkgs, St.class,
+                Arrays.asList(ScanConfig.ClazzType.CLASS));
+        Assert.assertTrue(classList1.size() > 0);
+        log.info("classList1 共扫描到{}个类", classList1.size());
+
+        List<Class<?>> classList2 = scanner.scanAnno(scanPkgs, Deprecated.class);
+        Assert.assertTrue(classList2.size() > 0);
+        log.info("共扫描到{}个类", classList2.size());
     }
 
     /**
@@ -39,17 +50,13 @@ public class ScannerTest {
      */
     @Test
     public void testScanByAnnotation() {
-        List<Class<?>> classList = scanner.scan(scanPkgs, Deprecated.class);
-        Assert.assertTrue(classList.size() > 0);
-        log.info("共扫描到{}个类", classList.size());
-
-        classList = scanner.scan(scanPkgs, St.class);
+        List<Class<?>> classList = scanner.scanAnno(scanPkgs, St.class);
         Assert.assertTrue(classList.size() == 3);
         log.info("共扫描到{}个类", classList.size());
 
         ScanConfig scanConfig = ScanConfig.builder()
                 .basePackages(scanPkgs)
-                .annotation(St.class)
+                .annotationClazz(St.class)
                 .build();
         log.info("扫描配置: {}.", scanConfig);
     }
@@ -59,7 +66,11 @@ public class ScannerTest {
      */
     @Test
     public void testScanByClass() {
-        List<Class<?>> classList = scanner.scan(Sets.newHashSet(Arrays.asList(
+        List<Class<?>> classList = scanner.scan(Arrays.asList("com.aaa",  "com.whosly"));
+        Assert.assertTrue(classList.size() > 0);
+        log.info("共扫描到{}个类:{}.", classList.size(), classList);
+
+        classList = scanner.scan(Sets.newHashSet(Arrays.asList(
                 "com.aaa",  "com.whosly")), ISt.class);
         Assert.assertTrue(classList.size() == 7);
         log.info("共扫描到{}个类:{}.", classList.size(), classList);
@@ -89,6 +100,10 @@ public class ScannerTest {
         Assert.assertTrue(classList.size() == 1);
         log.info("共扫描到{}个类:{}.", classList.size(), classList);
 
+        classList = scanner.scan(Sets.newHashSet(Arrays.asList(
+                "com.aaa",  "com.whosly")), Arrays.asList(ScanConfig.ClazzType.INTERFACE, ScanConfig.ClazzType.CLASS, ScanConfig.ClazzType.ABSTRACT));
+        Assert.assertTrue(classList.size() > 0);
+        log.info("共扫描到{}个类:{}.", classList.size(), classList);
     }
 
 }

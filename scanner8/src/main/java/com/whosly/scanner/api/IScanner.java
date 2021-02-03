@@ -13,6 +13,26 @@ import java.util.Set;
  * @Date 2019-09-04 20:41
  */
 public interface IScanner {
+
+    /**
+     * 扫描多个包下带有 指定注解的Class
+     *
+     * @param basePackages 包路径
+     * @param annotation  指定泛型修饰的
+     * @return
+     */
+    List<Class<?>> scanAnno(List<String> basePackages, Class<? extends Annotation> annotation);
+
+    /**
+     * 扫描多个包下类/接口clazz的所有子类
+     *
+     * @param basePackages 包路径
+     * @param annotation  指定泛型修饰的
+     * @param clazzTypes 扫描类类型
+     * @return
+     */
+    List<Class<?>> scanAnno(List<String> basePackages, Class<? extends Annotation> annotation, List<ScanConfig.ClazzType> clazzTypes);
+
     /**
      * 扫描多个包下的Class
      *
@@ -22,19 +42,10 @@ public interface IScanner {
     List<Class<?>> scan(List<String> basePackages);
 
     /**
-     * 扫描多个包下带有指定注解的Class
-     *
-     * @param basePackages 包路径
-     * @param annotation
-     * @return
-     */
-    List<Class<?>> scan(List<String> basePackages, Class<? extends Annotation> annotation);
-
-    /**
      * 扫描多个包下类/接口clazz的所有子类
      *
      * @param basePackages 包路径
-     * @param clazz 类或接口类型
+     * @param clazz 指定的类或接口类型
      * @return
      */
     List<Class<?>> scan(Set<String> basePackages, Class<?> clazz);
@@ -43,7 +54,17 @@ public interface IScanner {
      * 扫描多个包下类/接口clazz的所有子类
      *
      * @param basePackages 包路径
-     * @param clazz 类或接口类型
+     * @param clazzTypes 扫描类类型
+     * @return
+     */
+    List<Class<?>> scan(Set<String> basePackages, List<ScanConfig.ClazzType> clazzTypes);
+
+    /**
+     * 扫描多个包下类/接口clazz的所有子类
+     *
+     * @param basePackages 包路径
+     * @param clazz 指定的类或接口类型
+     * @param clazzTypes 扫描类类型
      * @return
      */
     List<Class<?>> scan(Set<String> basePackages, Class<?> clazz, List<ScanConfig.ClazzType> clazzTypes);

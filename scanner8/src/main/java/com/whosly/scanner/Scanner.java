@@ -33,28 +33,24 @@ public class Scanner implements IScanner {
     }
 
     @Override
-    public List<Class<?>> scan(List<String> basePackages, Class<? extends Annotation> annotation) {
+    public List<Class<?>> scanAnno(List<String> basePackages, Class<? extends Annotation> annotation) {
         List<Class<?>> classList = scan(ScanConfig.builder()
                 .basePackages(basePackages)
-                .annotation(annotation)
+                .annotationClazz(annotation)
                 .build());
 
         return classList;
+    }
 
-//        //根据 Annotation 过滤并返回
-//        return classList.parallelStream()
-//                .filter(clz -> {
-//                    try {
-//                        if (clz.getAnnotation(annotation) == null) {
-//                            return false;
-//                        }
-//                    } catch (Throwable e) {
-////                        log.debug(e.getMessage());
-//                        return false;
-//                    }
-//                    return true;
-//                })
-//                .collect(Collectors.toList());
+    @Override
+    public List<Class<?>> scanAnno(List<String> basePackages, Class<? extends Annotation> annotation, List<ScanConfig.ClazzType> clazzTypes) {
+        List<Class<?>> classList = scan(ScanConfig.builder()
+                .basePackages(basePackages)
+                .annotationClazz(annotation)
+                .clazzTypes(clazzTypes)
+                .build());
+
+        return classList;
     }
 
     @Override
@@ -62,6 +58,14 @@ public class Scanner implements IScanner {
         return scan(ScanConfig.builder()
                 .basePackages(basePackages)
                 .clazz(clazz)
+                .build());
+    }
+
+    @Override
+    public List<Class<?>> scan(Set<String> basePackages, List<ScanConfig.ClazzType> clazzTypes) {
+        return scan(ScanConfig.builder()
+                .basePackages(basePackages)
+                .clazzTypes(clazzTypes)
                 .build());
     }
 

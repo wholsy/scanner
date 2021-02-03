@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Modifier;
+import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Arrays;
@@ -21,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.*;
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 
 import static com.whosly.scanner.consts.Consts.PACKAGE_SEPARATOR;
@@ -48,9 +50,10 @@ public class ScannerUtils {
             //包名转化为路径名
             String pathName = PackageUtil.package2Path(pkg);
             //获取路径下URL
-            Enumeration<URL> urls = getClassLoader().getResources(pathName);
+            Enumeration<URL> urlEnumeration = getClassLoader().getResources(pathName);
+
             //循环扫描路径
-            classList = scanUrls(pkg, urls, scanConfig, scanTaskId);
+            classList = scanUrls(pkg, urlEnumeration, scanConfig, scanTaskId);
         } catch (Exception e) {
             log.error("扫描「" + scanTaskId.getTaskId() + "」包路径" + pkg + "出错：", e);
         }
@@ -75,7 +78,9 @@ public class ScannerUtils {
         //Enumeration转list
         List<URL> urlList = new LinkedList<>();
         while (urls.hasMoreElements()) {
-            urlList.add(urls.nextElement());
+            // 此时 add 的结果大概是：jar:file:/C:/Users/ibm/.m2/repository/junit/junit/4.12/junit-4.12.jar!/org/junit
+            URL url = urls.nextElement();
+            urlList.add(url);
         }
 
         //创建异步任务
@@ -157,11 +162,14 @@ public class ScannerUtils {
     /**
      * 递归扫描Jar文件内的Class类
      *
+     * 作废。 由  recursiveScan4Jar2  代替
+     *
      * @param pkg
      * @param jarPath
      * @return Class列表
      * @throws IOException
      */
+    @Deprecated
     private static List<Class<?>> recursiveScan4Jar(String pkg, String jarPath, ScanConfig scanConfig, ScanTaskId scanTaskId) throws IOException {
         List<Class<?>> classList = new LinkedList<>();
 
@@ -205,6 +213,54 @@ public class ScannerUtils {
     }
 
     /**
+     * 递归扫描Jar文件内的Class类
+     *
+     * @param pkg
+     * @param url
+     * @return Class列表
+     * @throws IOException
+     */
+    private static List<Class<?>> recursiveScan4Jar2(String pkg, URL url, ScanConfig scanConfig, ScanTaskId scanTaskId)
+            throws IOException, ClassNotFoundException {
+        List<Class<?>> classList = new LinkedList<>();
+
+        //转换为JarURLConnection
+        JarURLConnection connection = (JarURLConnection) url.openConnection();
+        if (connection != null) {
+            JarFile jarFile = connection.getJarFile();
+            if (jarFile != null) {
+                //得到该jar文件下面的类实体
+                Enumeration<JarEntry> jarEntryEnumeration = jarFile.entries();
+                while (jarEntryEnumeration.hasMoreElements()) {
+                            /*entry的结果大概是这样：
+                                    org/
+                                    org/junit/
+                                    org/junit/rules/
+                                    org/junit/runners/*/
+                    JarEntry entry = jarEntryEnumeration.nextElement();
+                    String jarEntryName = entry.getName();
+                    //这里我们需要过滤不是class文件和不在basePack包名下的类
+                    if (jarEntryName.contains(".class") && jarEntryName.replaceAll("/",".").startsWith(pkg)) {
+//                        String className = jarEntryName.substring(0, jarEntryName.lastIndexOf(".")).replace("/", ".");
+                        //文件名转类名. eg. com.sun.java.swing.action.AboutAction
+                        String className = ClazzUtils.classFile2SimpleClass(PackageUtil.path2Package(jarEntryName));
+
+                        //加载类文件
+                        Class clz = getClazz(className, scanConfig, scanTaskId);
+                        // Class cls = Class.forName(className);
+
+                        if(clz != null){
+                            classList.add(clz);
+                        }
+                    }
+                }
+            }
+        }
+
+        return classList;
+    }
+
+    /**
      * 通过类名得到Class类
      *
      * @param className 类名
@@ -221,14 +277,14 @@ public class ScannerUtils {
             }
 
             // 判断是否是指定注解的 Class. 扫描的是被该注解标注的所有类
-            if(scanConfig.getAnnotation() != null){
-                if (clz.getAnnotation(scanConfig.getAnnotation()) == null) {
+            if(scanConfig.getAnnotationClazz() != null){
+                if (clz.getAnnotation(scanConfig.getAnnotationClazz()) == null) {
                     // 该类不存在注解， 则不添加
                     return null;
                 }
 
-                // 不是注解自身
-                if(StringUtils.equals(clz.getCanonicalName(), scanConfig.getAnnotation().getCanonicalName())){
+                // 不是注解自身， 即当前扫描对象为 注解自身的时候，忽略
+                if(StringUtils.equals(clz.getCanonicalName(), scanConfig.getAnnotationClazz().getCanonicalName())){
                     return null;
                 }
             }
@@ -245,30 +301,32 @@ public class ScannerUtils {
                   return null;
                 }
 
-                // 到这的，都为子孙类了
-                // 匿名内部类或者注解，直接抛弃
-                if(clz.isAnonymousClass() || clz.isAnnotation()){
-                    return null;
-                }else {
-                    if(clz.isInterface()){
-                        if (!scanConfig.getClazzTypes().contains(ScanConfig.ClazzType.INTERFACE)) {
-                            // 不允许包含接口
+                //.
+            }
+
+            // 到这的，都为子孙类了
+            // 匿名内部类或者注解，直接抛弃
+            if(clz.isAnonymousClass() || clz.isAnnotation()){
+                return null;
+            }else {
+                if(clz.isInterface()){
+                    if (!scanConfig.getClazzTypes().contains(ScanConfig.ClazzType.INTERFACE)) {
+                        // 不允许包含接口
+                        return null;
+                    }
+                }else{
+                    /* 普通类，抽象类 */
+                    // 抽象类
+                    if(Modifier.isAbstract(clz.getModifiers())){
+                        if (!scanConfig.getClazzTypes().contains(ScanConfig.ClazzType.ABSTRACT)) {
+                            // 不允许包含抽象类
                             return null;
                         }
                     }else{
-                        /* 普通类，抽象类 */
-                        // 抽象类
-                        if(Modifier.isAbstract(clz.getModifiers())){
-                            if (!scanConfig.getClazzTypes().contains(ScanConfig.ClazzType.ABSTRACT)) {
-                                // 不允许包含抽象类
-                                return null;
-                            }
-                        }else{
-                            // 普通类
-                            if (!scanConfig.getClazzTypes().contains(ScanConfig.ClazzType.CLASS)) {
-                                // 不允许包含普通类
-                                return null;
-                            }
+                        // 普通类
+                        if (!scanConfig.getClazzTypes().contains(ScanConfig.ClazzType.CLASS)) {
+                            // 不允许包含普通类
+                            return null;
                         }
                     }
                 }
@@ -284,7 +342,7 @@ public class ScannerUtils {
     }
 
     /**
-     * 获取 ClassLoader
+     * 通过当前线程得到类加载器从而得到URL的枚举, 获取 ClassLoader
      */
     private static ClassLoader getClassLoader() {
         return Thread.currentThread().getContextClassLoader();
@@ -321,7 +379,7 @@ public class ScannerUtils {
     }
 
     private static List<Class<?>> scan(String pkg, URL url, ScanConfig scanConfig, ScanTaskId scanTaskId) {
-        //获取协议
+        //获取协议, 大概是jar
         String protocol = url.getProtocol();
 
         List<Class<?>> classList = new LinkedList<>();
@@ -330,10 +388,12 @@ public class ScannerUtils {
                 //文件
                 String path = URLDecoder.decode(url.getFile(), Consts.DEFAULT_CHARSET);
                 classList.addAll(recursiveScan4Path(pkg, path, scanConfig, scanTaskId));
-            } else if (ProtocolTypes.jar.name().equals(protocol)) {
-                //jar包
-                String jarPath = URLUtils.getJarPathFormUrl(url);
-                classList.addAll(recursiveScan4Jar(pkg, jarPath, scanConfig, scanTaskId));
+            } else if (StringUtils.equalsIgnoreCase(ProtocolTypes.jar.name(), protocol)) {
+                //jar包, 转换为 JarURLConnection
+//                String jarPath = URLUtils.getJarPathFormUrl(url);
+//                classList.addAll(recursiveScan4Jar(pkg, jarPath, scanConfig, scanTaskId));
+
+                classList.addAll(recursiveScan4Jar2(pkg, url, scanConfig, scanTaskId));
             }
         } catch (Exception e) {
             log.error("扫描「" + scanTaskId.getTaskId() + "」出错:", e);

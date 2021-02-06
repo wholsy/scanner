@@ -25,7 +25,7 @@
     + jar上传至中央仓库。groupId： com.whosly。
     + 部署至maven中央仓库 https://search.maven.org/search?q=whosly  。
 
-###  1.3.0-SNAPSHOT
+###  1.3.0-SNAPSHOT/RELEASE
     + 优化扫描jar下类的扫描精确度
 
 
